@@ -53,7 +53,7 @@
 
 
             $data = [
-                'title' => 'PakketOptieen Les',
+                'title' => 'Details Optiepakket ',
                 'rows'  => $rows,
                 'Id' => $Id,
 

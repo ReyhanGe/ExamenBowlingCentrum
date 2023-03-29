@@ -33,7 +33,7 @@
         <tbody>
             <?= $data['rows']; ?>
         </tbody>
-    </table><br>
+    </table>
     <a href="<?= URLROOT; ?>/homepages/index">Homepage</a>
 
 </body>
