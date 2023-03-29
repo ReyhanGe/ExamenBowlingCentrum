@@ -1,14 +1,16 @@
 <?php
 
 class Klanten extends Controller
-{ // Properties, field
+{ 
+    // Properties, field
     private $klantenModel;
     // Dit is de constructor
     public function __construct()
     {
         $this->klantenModel = $this->model('KlantenModel');
     }
-
+   //  Voorbereiding van gegevens voor clantenlijst
+   //Benodigde gegevens voor de pagina verzenden
     public function index()
     {
         $klanten = $this->klantenModel->getKlanten();

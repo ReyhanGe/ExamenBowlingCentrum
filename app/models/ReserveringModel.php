@@ -1,4 +1,5 @@
 <?php
+//om databasebewerkingen uit te voeren
 class ReserveringModel
 {
     // Properties, fields
@@ -9,7 +10,7 @@ class ReserveringModel
     {
         $this->db = new Database();
     }
-
+// genereert een SQL-query om reserveringen op te halen
     public function getReserveringen()
     {
         $sql = "SELECT  Persoon.Id
@@ -31,7 +32,7 @@ class ReserveringModel
         $result = $this->db->resultSet();
         return $result;
     }
-
+// Maakt een SQL-query om het optiepakket uit de database te halen.
     public function getTopicsLesson($Id)
     {
         $this->db->query("SELECT  Persoon.Id        

@@ -9,7 +9,7 @@ class KlantenModel
     {
         $this->db = new Database();
     }
-
+// query's door kolommen te combineren
     public function getKlanten()
     {
         $sql = "SELECT Persoon.Voornaam, 
