@@ -22,7 +22,7 @@ class KlantenModel
                        Persoon.IsVolwassen
                 FROM Persoon 
                 INNER JOIN Contact ON Persoon.Id = Contact.PersoonId
-                ORDER BY Persoon.Voornaam ASC, Persoon.Achternaam ASC;";
+                ORDER BY Persoon.Achternaam ASC;";
         $this->db->query($sql);
         $result = $this->db->resultSet();
         return $result;
