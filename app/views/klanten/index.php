@@ -11,13 +11,11 @@
 <body>
     <h3><?= $data['title']; ?> </h3>
 
-    <h5><?= 'Datum: ' . $data['date']  . ' Tijd: ' . $data['time']; ?></h5>
-
-    <form method="post" action="">
-        <label for="date">Datum:</label>
-        <input type="date" id="date" name="date">
+    <form method="get">
+        <label for="date">Selecteer een datum:</label>
+        <input type="date" name="date" id="date" value="<?= isset($_GET['date']) ? $_GET['date'] : date('Y-m-d') ?>">
         <button type="submit">Tonen</button>
-    </form><br>
+    </form>
 
 
 

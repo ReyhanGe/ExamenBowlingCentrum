@@ -12,11 +12,13 @@
         public function index()
         {
 
-            $reserveringen = $this->reserveringModel->getReserveringen();
-
-            $rows = '';
-            foreach ($reserveringen as $value) {
-                $rows .= "<tr>
+            $records = $this->reserveringModel->getReserveringen();
+            if (sizeof($records) == 0) {
+                $rows = "<tr style= 'text-align: center; font-size: 35px; color: red;'><td>Niemand </td></tr>";
+            } else {
+                $rows = '';
+                foreach ($records as $value) {
+                    $rows .= "<tr>
                       <td>$value->Voornaam</td>
                       <td>$value->Tussenvoegsel</td>
                       <td>$value->Achternaam</td>
@@ -24,114 +26,39 @@
                       <td>$value->AantalVolwassen</td>
                       <td>$value->AantalKinderen</td>
                       <td>$value->Naam</td>
-                      <td><a href='" . URLROOT . "/reservering/topicslesson/$value->Id'><img src='\img\kalem.jpg' alt='klaem'></a></td>
+                      <td><a href='" . URLROOT . "/reservering/update/$value->Id'><img src='\img\kalem.jpg' alt='klaem'></a></td>
                     </tr>";
+                }
             }
 
-            $data = [
-                'title' => 'Overzicht Reserveringen',
-                'rows' => $rows
-            ];
+            $data = ['title' => 'Overzicht Reserveringen', 'rows' => $rows];
             $this->view('/reservering/index', $data);
         }
 
 
-        function topicsLesson($Id)
+        public function update($id = null)
         {
-            $result = $this->reserveringModel->getTopicsLesson($Id);
-
-            // var_dump($result);
-
-
-            $rows = "";
-            foreach ($result as $topic) {
-                $rows .= "<tr>      
-                            <td>$topic->Naam</td>
-                          </tr>";
-            }
-
-
-
-            $data = [
-                'title' => 'Details Optiepakket ',
-                'rows'  => $rows,
-                'Id' => $Id,
-
-            ];
-            $this->view('reservering/topicslesson', $data);
-
-            $data = [
-                'title' => 'PakketOptie Toevoegen',
-                'Id' => $Id,
-                'topicError' => ''
-            ];
-
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                // var_dump($_POST);
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                // var_dump("Ik ben bıj post update");
                 $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-                $data = [
-                    'title' => 'PakketOptie Toevoegen',
-                    'Id' => $_POST['Id'],
-                    'topic' => $_POST['topic'],
-                    'topicError' => ''
-                ];
-
-
-
-                if (empty($data['topicError'])) {
-                    $result = $this->reserveringModel->addTopic($_POST);
-
-                    if ($result) {
-                        $data['title'] = "<p>Het nieuwe PakketOptie is succesvol toegevoegd</p>";
-                    } else {
-                        echo "<p>Het nieuwe PakketOptie is niet toegevoegd</p>";
-                    }
-                    header('Refresh:3; url=' . URLROOT . '/reservering/index');
-                } else {
-                    header('Refresh:3; url=' . URLROOT . '/reservering/addTopic/' . $data['Id']);
-                }
-            }
-            $this->view('reservering/addTopic', $data);
-
-            $data = [
-                'title' => 'PakketOptie Toevoegen',
-                'Id' => $Id,
-                'topicError' => ''
-            ];
-
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // var_dump($_POST);
-                $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-                $data = [
-                    'title' => 'PakketOptie Toevoegen',
-                    'Id' => $_POST['Id'],
-                    'topic' => $_POST['topic'],
-                    'topicError' => ''
-                ];
-
-
-
-                if (empty($data['topicError'])) {
-
-                    if (strpos(strtolower($_POST['topic']), 'vrijgezellenfeest') !== false) {
-
-                        echo "Het optie vrijgezellenfeest is niet bedoelt voor kinderen.";
-                    }
-
-                    $result = $this->reserveringModel->addTopic($_POST);
-
-                    if ($result) {
-                        $data['title'] = "Het nieuwe PakketOptie is succesvol toegevoegd";
-                    } else {
-                        echo "Het nieuwe PakketOptie is niet toegevoegd";
-                    }
-                    header('Refresh:3; url=' . URLROOT . '/reservering/index');
-                } else {
-
-                    header('Refresh:3; url=' . URLROOT . '/reservering/addTopic/' . $data['Id']);
+                // exit();
+                // Check if Naam is Vrijgezellenfeest and if AantalKinderen is groot 0
+                if ($_POST['Naam'] ==  'Vrijgezellenfeest' && $_POST['AantalKinderen'] > 0) {
+                    echo "Het optiepakket vrijgezellenfeest is niet bedoelt voor kinderen";
+                    header("Refresh:2; url=" . URLROOT . "/reservering/index");
+                    return;
                 }
+
+                $this->reserveringModel->ReserveringUpdate($_POST);
+
+                echo "Het optiepakket is gewijzigd";
+                header("Refresh:2; url=" . URLROOT . "/reservering/index");
+            } else {
+                //var_dump("Ik ben bıj get update");
+                $row = $this->reserveringModel->getReserveringUpdate($id);
+                $data = ['title' => 'Detail Optiepakket', 'row' => $row];
+                $this->view('reservering/update', $data);
             }
         }
     }
